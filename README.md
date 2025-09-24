@@ -39,6 +39,7 @@ pip install -r requirements.txt
 
 4. Aplicar migraciones
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
 5. Crear superusuario:
