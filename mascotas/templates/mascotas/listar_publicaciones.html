@@ -1,0 +1,21 @@
+
+    {% extends "base.html" %}
+
+{% block content %}
+<h1>Blog de cuidados y consejos</h1>
+{% if user.is_authenticated and user.is_staff %}
+  <a href="{% url 'crear_publicacion' %}" class="btn btn-sm btn-success mb-3">Crear nueva publicación</a>
+{% endif %}
+
+{% for post in publicaciones %}
+<div class="card mb-3" style="cursor: pointer;"
+onclick="window.location.href='{% url 'detalle_publicacion' post.id %}'">
+  <div class="card-body">
+    <h5 class="card-title">{{ post.titulo }}</h5>
+    <p class="card-text">{{ post.contenido }}</p>
+    <small>Autor: {{ post.autor.username }} | Fecha: {{ post.fecha_publicacion }}</small>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Registrar nueva mascota</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  
+  <h4>Datos de la Mascota</h4>
+  {{ form.as_p }}
+  
+  <h4>Fotos de la Mascota</h4>
+  {{ formset.management_form }}
+  {% for subform in formset %}
+    <div class="mb-3 border p-2">
+      {{ subform.as_p }}
+    </div>
+  {% endfor %}
+  
+  <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+{% endblock %}

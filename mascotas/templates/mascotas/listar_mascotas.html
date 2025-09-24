@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Mascotas disponibles para adopción</h1>
+
+<form method="get" class="row g-3 mb-4">
+  <div class="col-md-3">
+    <input type="text" name="especie" class="form-control" placeholder="Especie (ej: perro, gato)" value="{{ valores.especie }}">
+  </div>
+  <div class="col-md-2">
+    <select name="sexo" class="form-select">
+      <option value="">Sexo</option>
+      <option value="Macho" {% if valores.sexo == "Macho" %}selected{% endif %}>Macho</option>
+      <option value="Hembra" {% if valores.sexo == "Hembra" %}selected{% endif %}>Hembra</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="tamaño" class="form-select">
+      <option value="">Tamaño</option>
+      <option value="Pequeño" {% if valores.tamaño == "Pequeño" %}selected{% endif %}>Pequeño</option>
+      <option value="Mediano" {% if valores.tamaño == "Mediano" %}selected{% endif %}>Mediano</option>
+      <option value="Grande" {% if valores.tamaño == "Grande" %}selected{% endif %}>Grande</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <input type="text" name="ubicacion" class="form-control" placeholder="Ubicación" value="{{ valores.ubicacion }}">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+  </div>
+</form>
+
+<div class="row">
+  {% for mascota in mascotas %}
+  <div class="col-md-4 mb-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ mascota.nombre }}</h5>
+        <p class="card-text">Especie: {{ mascota.especie }}</p>
+        <p class="card-text">Edad: {{ mascota.edad }}</p>
+        <p class="card-text">Sexo: {{ mascota.sexo }}</p>
+        <p class="card-text">Tamaño: {{ mascota.tamaño }}</p>
+        <a href="{% url 'detalle_mascota' mascota.id %}" class="btn btn-sm btn-outline-info">Ver detalle</a>
+        <a href="{% url 'solicitar_adopcion' mascota.id %}" class="btn btn-sm btn-primary">Solicitar adopción</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p>No se encontraron mascotas con los filtros seleccionados.</p>
+  {% endfor %}
+</div>
+{% endblock %}

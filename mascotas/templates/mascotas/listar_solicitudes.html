@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Solicitudes de Adopción</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Mascota</th>
+      <th>Fecha</th>
+      <th>Estado</th>
+      <th>Mensaje</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for solicitud in solicitudes %}
+    <tr>
+      <td>{{ solicitud.usuario.username }}</td>
+      <td>{{ solicitud.mascota.nombre }}</td>
+      <td>{{ solicitud.fecha_solicitud }}</td>
+      <td>{{ solicitud.estado }}</td>
+      <td>{{ solicitud.mensaje|default:"-" }}</td>
+      <td>
+        {% if solicitud.estado == "pendiente" %}
+          <a href="{% url 'aprobar_solicitud' solicitud.id %}" class="btn btn-success btn-sm">Aprobar</a>
+          <a href="{% url 'rechazar_solicitud' solicitud.id %}" class="btn btn-danger btn-sm">Rechazar</a>
+        {% else %}
+          <span class="text-muted">Sin acciones</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'listar_mascotas' %}" class="btn btn-secondary">Volver</a>
+{% endblock %}

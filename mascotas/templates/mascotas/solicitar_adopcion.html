@@ -1,0 +1,14 @@
+
+    {% extends "base.html" %}
+
+{% block content %}
+<h1>Solicitar adopción de {{ mascota.nombre }}</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Enviar solicitud</button>
+</form>
+
+<a href="{% url 'listar_mascotas' %}" class="btn btn-secondary mt-2">Volver</a>
+{% endblock %}
