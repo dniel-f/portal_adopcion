@@ -48,5 +48,9 @@
   {% empty %}
   <p>No se encontraron mascotas con los filtros seleccionados.</p>
   {% endfor %}
+
+    {% if user.is_authenticated and user.is_staff %}
+    <a href="{% url 'registrar_mascota'%}" class="btn btn-warning">Registrar mascota</a>
+    {% endif %}
 </div>
 {% endblock %}
