@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+
 # -----------------------------
 # Mascota
 # -----------------------------
@@ -21,8 +22,13 @@ class Mascota(models.Model):
     especie = models.CharField(max_length=50)
     raza = models.CharField(max_length=50, blank=True)
     edad = models.PositiveIntegerField()
-    sexo = models.CharField(max_length=10, choices=[('Macho','Macho'),('Hembra','Hembra')])
-    tamaño = models.CharField(max_length=20, choices=[('Pequeño','Pequeño'),('Mediano','Mediano'),('Grande','Grande')])
+    sexo = models.CharField(
+        max_length=10, choices=[("Macho", "Macho"), ("Hembra", "Hembra")]
+    )
+    tamaño = models.CharField(
+        max_length=20,
+        choices=[("Pequeño", "Pequeño"), ("Mediano", "Mediano"), ("Grande", "Grande")],
+    )
     estado_salud = models.TextField(blank=True)
     descripcion = models.TextField(blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
@@ -41,6 +47,7 @@ class FotoMascota(models.Model):
     def __str__(self):
         return f"Foto de {self.mascota.nombre}"
 
+
 # -----------------------------
 # Solicitud de Adopción
 # -----------------------------
@@ -48,11 +55,15 @@ class SolicitudAdopcion(models.Model):
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     mascota = models.ForeignKey(Mascota, on_delete=models.CASCADE)
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=20, choices=[
-        ('pendiente', 'Pendiente'),
-        ('aprobada', 'Aprobada'),
-        ('rechazada', 'Rechazada')
-    ], default='pendiente')
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ("pendiente", "Pendiente"),
+            ("aprobada", "Aprobada"),
+            ("rechazada", "Rechazada"),
+        ],
+        default="pendiente",
+    )
     mensaje = models.TextField(blank=True, null=True)  # 👈 Agregado
 
     def __str__(self):
@@ -70,4 +81,3 @@ class PublicacionBlog(models.Model):
 
     def __str__(self):
         return self.titulo
-

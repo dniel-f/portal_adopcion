@@ -1,24 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .models import Mascota, SolicitudAdopcion, PublicacionBlog, CustomUser
-from .forms import SolicitudAdopcionForm, CustomUserCreationForm, MascotaForm, FotoMascotaFormSet, PublicacionBlogForm
+from .models import Mascota, SolicitudAdopcion, PublicacionBlog
+from .forms import (
+    SolicitudAdopcionForm,
+    CustomUserCreationForm,
+    MascotaForm,
+    FotoMascotaFormSet,
+    PublicacionBlogForm,
+)
 from django.contrib.admin.views.decorators import staff_member_required
-
-
-
 
 # ==============================
 # Mascotas
 # ==============================
 
+
 def listar_mascotas(request):
     """
     Lista todas las mascotas disponibles para adopción.
     """
-    #mascotas = Mascota.objects.all()
-    #return render(request, "mascotas/listar_mascotas.html", {"mascotas": mascotas})
-
     mascotas = Mascota.objects.filter(disponible=True)
 
     # Obtener parámetros de la URL
@@ -36,17 +37,25 @@ def listar_mascotas(request):
     if ubicacion and ubicacion != "":
         mascotas = mascotas.filter(ubicacion__icontains=ubicacion)
 
-    return render(request, "mascotas/listar_mascotas.html", {
-        "mascotas": mascotas,
-        "valores": {
-            "especie": especie or "",
-            "sexo": sexo or "",
-            "tamaño": tamaño or "",
-            "ubicacion": ubicacion or "",
-        }
-    })
+    return render(
+        request,
+        "mascotas/listar_mascotas.html",
+        {
+            "mascotas": mascotas,
+            "valores": {
+                "especie": especie or "",
+                "sexo": sexo or "",
+                "tamaño": tamaño or "",
+                "ubicacion": ubicacion or "",
+            },
+        },
+    )
+
 
 def registrar_mascota(request):
+    """
+    Registrar una nueva mascota
+    """
     if request.method == "POST":
         form = MascotaForm(request.POST)
         formset = FotoMascotaFormSet(request.POST, request.FILES)
@@ -61,24 +70,37 @@ def registrar_mascota(request):
         form = MascotaForm()
         formset = FotoMascotaFormSet()
 
-    return render(request, "mascotas/registrar_mascota.html", {
-        "form": form,
-        "formset": formset,
-    })
-
+    return render(
+        request,
+        "mascotas/registrar_mascota.html",
+        {
+            "form": form,
+            "formset": formset,
+        },
+    )
 
 
 def detalle_mascota(request, pk):
+    """
+    Mostrar en detalle una mascota
+    """
     mascota = get_object_or_404(Mascota, pk=pk)
     fotos = mascota.fotos.all()  # accede a las fotos relacionadas
-    return render(request, "mascotas/detalle_mascota.html", {
-        "mascota": mascota,
-        "fotos": fotos,
-    })
+    return render(
+        request,
+        "mascotas/detalle_mascota.html",
+        {
+            "mascota": mascota,
+            "fotos": fotos,
+        },
+    )
 
 
 @user_passes_test(lambda u: u.is_staff)
 def editar_mascota(request, pk):
+    """
+    Edita los datos de una mascota registrada
+    """
     mascota = get_object_or_404(Mascota, pk=pk)
     if request.method == "POST":
         form = MascotaForm(request.POST, instance=mascota)
@@ -92,27 +114,35 @@ def editar_mascota(request, pk):
         form = MascotaForm(instance=mascota)
         formset = FotoMascotaFormSet(instance=mascota)
 
-    return render(request, "mascotas/editar_mascota.html", {
-        "form": form,
-        "formset": formset,
-        "mascota": mascota,
-    })
+    return render(
+        request,
+        "mascotas/editar_mascota.html",
+        {
+            "form": form,
+            "formset": formset,
+            "mascota": mascota,
+        },
+    )
+
 
 @user_passes_test(lambda u: u.is_staff)
 def eliminar_mascota(request, pk):
+    """
+    Elimina una mascota registrada
+    """
     mascota = get_object_or_404(Mascota, pk=pk)
     if request.method == "POST":
         mascota.delete()
         messages.success(request, "La mascota fue eliminada correctamente.")
         return redirect("listar_mascotas")
 
-    return render(request, "mascotas/eliminar_mascota.html", {
-        "mascota": mascota
-    })
+    return render(request, "mascotas/eliminar_mascota.html", {"mascota": mascota})
+
 
 # ==============================
 # Solicitudes de adopción
 # ==============================
+
 
 @login_required
 def solicitar_adopcion(request, mascota_id):
@@ -133,9 +163,9 @@ def solicitar_adopcion(request, mascota_id):
     else:
         form = SolicitudAdopcionForm()
 
-    return render(request, "mascotas/solicitar_adopcion.html", {"form": form, "mascota": mascota})
-
-
+    return render(
+        request, "mascotas/solicitar_adopcion.html", {"form": form, "mascota": mascota}
+    )
 
 
 @user_passes_test(lambda u: u.is_staff)  # solo staff/admin puede ver
@@ -143,11 +173,10 @@ def listar_solicitudes(request):
     """
     Muestra todas las solicitudes de adopción (solo staff).
     """
-    #solicitudes = SolicitudAdopcion.objects.select_related("usuario", "mascota")
-    #return render(request, "mascotas/listar_solicitudes.html", {"solicitudes": solicitudes})
     solicitudes = SolicitudAdopcion.objects.all().order_by("-fecha_solicitud")
-    return render(request, "mascotas/listar_solicitudes.html", {"solicitudes": solicitudes})
-
+    return render(
+        request, "mascotas/listar_solicitudes.html", {"solicitudes": solicitudes}
+    )
 
 
 @staff_member_required
@@ -156,14 +185,15 @@ def aprobar_solicitud(request, solicitud_id):
     Marca una solicitud como aprobada (solo staff).
     """
     solicitud = get_object_or_404(SolicitudAdopcion, id=solicitud_id)
-    solicitud.estado = 'aprobada'
+    solicitud.estado = "aprobada"
     solicitud.save()
-    
+
     solicitud.mascota.disponible = False
     solicitud.mascota.save()
-    
+
     messages.success(request, f"Solicitud de {solicitud.usuario.username} aprobada ✅")
-    return redirect('listar_solicitudes')
+    return redirect("listar_solicitudes")
+
 
 @staff_member_required
 def rechazar_solicitud(request, solicitud_id):
@@ -171,36 +201,41 @@ def rechazar_solicitud(request, solicitud_id):
     Marca una solicitud como rechazada (solo staff).
     """
     solicitud = get_object_or_404(SolicitudAdopcion, id=solicitud_id)
-    solicitud.estado = 'rechazada'
+    solicitud.estado = "rechazada"
     solicitud.save()
     messages.error(request, f"Solicitud de {solicitud.usuario.username} rechazada ❌")
-    return redirect('listar_solicitudes')
+    return redirect("listar_solicitudes")
 
 
 # ==============================
-# Blog
+# Publicaciones Blog
 # ==============================
+
 
 def listar_publicaciones(request):
     """
     Lista todas las publicaciones del blog.
     """
     publicaciones = PublicacionBlog.objects.all().order_by("-fecha_publicacion")
-    return render(request, "mascotas/listar_publicaciones.html", {"publicaciones": publicaciones})
+    return render(
+        request, "mascotas/listar_publicaciones.html", {"publicaciones": publicaciones}
+    )
 
-# -----------------------------
-# Detalle de publicación
-# -----------------------------
+
+
 def detalle_publicacion(request, pk):
+    """
+    Muestra en detalle una publicacion en el sistema
+    """
     post = get_object_or_404(PublicacionBlog, pk=pk)
     return render(request, "mascotas/detalle_publicacion.html", {"post": post})
 
 
-# -----------------------------
-# Crear publicación (staff)
-# ----------------------------
 @user_passes_test(lambda u: u.is_staff)
 def crear_publicacion(request):
+    """
+    Crea una publicacion para un usuario staff
+    """
     if request.method == "POST":
         form = PublicacionBlogForm(request.POST)
         if form.is_valid():
@@ -213,12 +248,14 @@ def crear_publicacion(request):
         form = PublicacionBlogForm()
     return render(request, "mascotas/crear_publicacion.html", {"form": form})
 
-# -----------------------------
-# Editar publicación (staff)
-# -----------------------------
+
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def editar_publicacion(request, pk):
+    """
+    Edita una publicacion para un usuario staff
+    """
     post = get_object_or_404(PublicacionBlog, pk=pk)
     if request.method == "POST":
         form = PublicacionBlogForm(request.POST, instance=post)
@@ -228,14 +265,17 @@ def editar_publicacion(request, pk):
             return redirect("detalle_publicacion", pk=post.pk)
     else:
         form = PublicacionBlogForm(instance=post)
-    return render(request, "mascotas/editar_publicacion.html", {"form": form, "post": post})
+    return render(
+        request, "mascotas/editar_publicacion.html", {"form": form, "post": post}
+    )
 
-# -----------------------------
-# Eliminar publicación (staff)
-# -----------------------------
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def eliminar_publicacion(request, pk):
+    """
+    Elimina una publicacion para un usuario staff
+    """
     post = get_object_or_404(PublicacionBlog, pk=pk)
     if request.method == "POST":
         post.delete()
@@ -244,10 +284,10 @@ def eliminar_publicacion(request, pk):
     return render(request, "mascotas/eliminar_publicacion.html", {"post": post})
 
 
-
 # ==============================
 # Registro de usuarios
 # ==============================
+
 
 def registro_usuario(request):
     """
@@ -257,10 +297,12 @@ def registro_usuario(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Tu cuenta ha sido creada con éxito. Ahora puedes iniciar sesión.")
+            messages.success(
+                request,
+                "Tu cuenta ha sido creada con éxito. Ahora puedes iniciar sesión.",
+            )
             return redirect("login")  # requiere urls de auth
     else:
         form = CustomUserCreationForm()
 
     return render(request, "mascotas/registro_usuario.html", {"form": form})
-
