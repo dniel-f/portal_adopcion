@@ -65,7 +65,7 @@ def registrar_mascota(request):
             for foto in fotos:
                 foto.mascota = mascota
                 foto.save()
-            return redirect("lista_mascotas")
+            return redirect("listar_mascotas")
     else:
         form = MascotaForm()
         formset = FotoMascotaFormSet()
