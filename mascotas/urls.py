@@ -11,6 +11,7 @@ urlpatterns = [
     path("mascota/<int:pk>/editar/", views.editar_mascota, name="editar_mascota"),
     path("mascota/<int:pk>/eliminar/", views.eliminar_mascota, name="eliminar_mascota"),
     path("mascota/<int:pk>/", views.detalle_mascota, name="detalle_mascota"),
+    path("registrar/", views.registrar_mascota, name="registrar_mascota"),
     # -----------------------------
     # Solicitudes de adopción
     # -----------------------------
@@ -41,7 +42,6 @@ urlpatterns = [
         name="login",
     ),
     path("logout/", LogoutView.as_view(next_page="listar_mascotas"), name="logout"),
-    path("registrar/", views.registrar_mascota, name="registrar_mascota"),
     # -----------------------------
     # Publicaciones / Blog
     # -----------------------------
