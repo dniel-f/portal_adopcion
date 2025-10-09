@@ -56,24 +56,24 @@ Abrir en el navegador: http://127.0.0.1:8000/
 ---
 
 ## Estructura del proyecto
-portal_adopcion/
-├── db.sqlite3
-├── manage.py
-├── mascotas/
-│   ├── admin.py
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   └── templates/
-├── portal_adopcion/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── media/                 # Imágenes subidas
-├── mascotas.ddl            # Definición de base de datos
+portal_adopcion/<br />
+├── db.sqlite3<br />
+├── manage.py<br />
+├── mascotas/<br />
+│   ├── admin.py<br />
+│   ├── models.py<br />
+│   ├── views.py<br />
+│   ├── urls.py<br />
+│   └── templates/<br />
+├── portal_adopcion/<br />
+│   ├── settings.py<br />
+│   ├── urls.py<br />
+│   └── wsgi.py<br />
+├── media/                 # Imágenes subidas<br />
+├── mascotas.ddl            # Definición de base de datos<br />
 ├── requirements.txt
-├── populate.py             # Script de datos de prueba
-└── README.md
+├── populate.py             # Script de datos de prueba<br />
+└── README.md<br />
 
 ---
 
